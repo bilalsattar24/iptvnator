@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "Voer een MAC-adres met 12 hexadecimale cijfers in, bijvoorbeeld 00:1A:79:12:34:56.",
             "SERIAL_NUMBER": "Serienummer (optioneel)",
             "SERIAL_NUMBER_HINT": "Gebruiken indien al geregistreerd bij de provider",
+            "STB_MODEL": "Settopboxmodel",
+            "STB_MODEL_HINT": "Gebruik het model dat de provider voor dit MAC-adres heeft geregistreerd",
             "DEVICE_ID_1": "Apparaat-ID 1 (optioneel)",
             "DEVICE_ID_2": "Apparaat-ID 2 (optioneel)",
             "DEVICE_ID_HINT": "64 hex-tekens — gebruiken als de provider een specifieke apparaat-ID vereist",

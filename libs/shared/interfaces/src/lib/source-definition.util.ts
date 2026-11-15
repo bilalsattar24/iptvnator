@@ -17,6 +17,7 @@ export const SOURCE_CONNECTION_FIELDS = [
     'stalkerDeviceId2',
     'stalkerSignature1',
     'stalkerSignature2',
+    'stalkerStbModel',
 ] as const;
 
 export function sourceFromPlaylist(

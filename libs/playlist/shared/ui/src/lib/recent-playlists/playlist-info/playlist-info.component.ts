@@ -24,6 +24,7 @@ import {
 } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -37,9 +38,11 @@ import {
 import {
     normalizeStalkerIdentityValue,
     normalizeStalkerMacAddress,
+    normalizeStalkerStbModel,
     normalizeXtreamContentTypes,
     Playlist,
     PlaylistMeta,
+    STALKER_STB_MODELS,
 } from '@iptvnator/shared/interfaces';
 import { PasswordVisibilityToggleDirective } from '@iptvnator/ui/components/password-visibility-toggle';
 import { RevealDetailsDirective } from '@iptvnator/ui/components/reveal-details';
@@ -77,6 +80,7 @@ import { XtreamSelectionProgressComponent } from '../../xtream-selection-progres
         MatIcon,
         MatIconButton,
         MatInputModule,
+        MatSelectModule,
         MatTooltip,
         PasswordVisibilityToggleDirective,
         ReactiveFormsModule,
@@ -96,6 +100,7 @@ export class PlaylistInfoComponent {
         optional: true,
     });
     public playlistData = inject<Playlist & { id: string }>(MAT_DIALOG_DATA);
+    readonly stbModels = STALKER_STB_MODELS;
     readonly isSaving = signal(false);
     readonly isRefreshingSelectedCatalogs = signal(false);
     readonly isHydratingStalkerPlaylist = signal(false);
@@ -241,6 +246,8 @@ export class PlaylistInfoComponent {
     }
 
     get hasAdvancedStalkerOptions(): boolean {
+        const stbModel = this.playlistDetails.get('stalkerStbModel')?.value;
+        if (normalizeStalkerStbModel(stbModel)) return true;
         return [
             'stalkerSerialNumber',
             'stalkerDeviceId1',

@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "Enter a MAC address with 12 hexadecimal digits, for example 00:1A:79:12:34:56.",
             "SERIAL_NUMBER": "Serial Number (Optional)",
             "SERIAL_NUMBER_HINT": "Use if already registered with provider",
+            "STB_MODEL": "Set-top box model",
+            "STB_MODEL_HINT": "Use the model your provider registered for this MAC address",
             "DEVICE_ID_1": "Device ID 1 (Optional)",
             "DEVICE_ID_2": "Device ID 2 (Optional)",
             "DEVICE_ID_HINT": "64 hex characters - use if provider requires specific device ID",

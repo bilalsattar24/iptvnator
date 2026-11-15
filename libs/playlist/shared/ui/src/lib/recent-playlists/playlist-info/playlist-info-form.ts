@@ -8,6 +8,8 @@ import {
 } from '@angular/forms';
 import {
     createStalkerMacAddressValidator,
+    DEFAULT_STALKER_STB_MODEL,
+    normalizeStalkerStbModel,
     normalizeXtreamServerUrl,
     PlaylistMeta,
     validateEpgSourceReferenceControl,
@@ -121,6 +123,10 @@ export function createPlaylistDetailsForm(
         stalkerDeviceId2: new FormControl(playlist.stalkerDeviceId2),
         stalkerSignature1: new FormControl(playlist.stalkerSignature1),
         stalkerSignature2: new FormControl(playlist.stalkerSignature2),
+        stalkerStbModel: new FormControl<string>(
+            normalizeStalkerStbModel(playlist.stalkerStbModel) ??
+                DEFAULT_STALKER_STB_MODEL
+        ),
         playlistEpgSourceInputs: new UntypedFormArray([
             createPlaylistEpgSourceControl(),
         ]),

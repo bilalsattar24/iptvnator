@@ -394,6 +394,7 @@ function mergeResolvedStalkerConnection(
         stalkerDeviceId2: resolved.stalkerDeviceId2,
         stalkerSignature1: resolved.stalkerSignature1,
         stalkerSignature2: resolved.stalkerSignature2,
+        stalkerStbModel: resolved.stalkerStbModel,
         stalkerToken: sessionPatch?.stalkerToken,
         stalkerSessionIdentity: sessionPatch?.stalkerSessionIdentity,
         stalkerWatchdogTimeout: sessionPatch?.stalkerWatchdogTimeout,

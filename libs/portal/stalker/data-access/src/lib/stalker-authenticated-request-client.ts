@@ -2,6 +2,7 @@ import type { StalkerRequestOptions } from './stalker-request-options';
 import {
     extractStalkerAuthFailureBody,
     isFullStalkerPortalPlaylist,
+    normalizeStalkerStbModel,
     type Playlist,
     STALKER_REQUEST,
 } from '@iptvnator/shared/interfaces';
@@ -41,6 +42,9 @@ export class StalkerAuthenticatedRequestClient {
             configuration,
             options
         );
+        const stbModel = normalizeStalkerStbModel(
+            configuration.stalkerStbModel
+        );
 
         try {
             const response = await this.dataService.sendIpcEvent<T>(
@@ -52,6 +56,7 @@ export class StalkerAuthenticatedRequestClient {
                     ...(options.silent ? { silent: true } : {}),
                     token,
                     ...(serialNumber ? { serialNumber } : {}),
+                    ...(stbModel ? { stbModel } : {}),
                 }
             );
             this.assertCurrent(configuration, sessionFingerprint);

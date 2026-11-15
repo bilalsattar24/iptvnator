@@ -721,6 +721,56 @@ describe('StalkerPortalDiscoveryService', () => {
             );
         });
 
+        it('resolves a bare origin whose every path redirects to a portal page on another node', async () => {
+            // `http://entry/` → `https://entry/` → `http://node/…/c/`: the
+            // TLS downgrade and the host change are both part of the chain
+            // the transport follows; discovery only sees the final page.
+            mockProbes({
+                'http://entry.example.invalid/portal.php': PAGE,
+                'http://entry.example.invalid/server/load.php': PAGE,
+                'http://entry.example.invalid/stalker_portal/server/load.php':
+                    PAGE,
+                'http://node.example.invalid/stalker_portal/server/load.php': {
+                    resolve: { stalkerAuthFailure: 'Authorization failed.' },
+                },
+            });
+            authenticate.mockResolvedValue({ token: 'TOKEN-BARE' });
+
+            const outcome = await service.discover(
+                'http://entry.example.invalid',
+                MAC,
+                { stbModel: 'MAG424' }
+            );
+
+            expect(outcome).toMatchObject({
+                status: 'resolved',
+                portalUrl:
+                    'http://node.example.invalid/stalker_portal/server/load.php',
+                token: 'TOKEN-BARE',
+            });
+            expect(
+                probeCalls().map(
+                    ([, payload]) => (payload as { url: string }).url
+                )
+            ).toEqual([
+                'http://entry.example.invalid/portal.php',
+                'http://entry.example.invalid/server/load.php',
+                'http://entry.example.invalid/stalker_portal/server/load.php',
+                'http://node.example.invalid/stalker_portal/server/load.php',
+            ]);
+            // Every probe presents the selected box, and the confirming
+            // authentication runs with the same identity.
+            for (const [, payload] of probeCalls()) {
+                expect(payload).toMatchObject({ stbModel: 'MAG424' });
+            }
+            expect(authenticate).toHaveBeenCalledWith(
+                'http://node.example.invalid/stalker_portal/server/load.php',
+                MAC,
+                { stbModel: 'MAG424' },
+                expect.anything()
+            );
+        });
+
         it('keeps the entered candidates first when one of them answers', async () => {
             mockProbes({
                 'http://entry.example.invalid/portal.php': PAGE,

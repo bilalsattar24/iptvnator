@@ -93,6 +93,49 @@ describe('StalkerAuthApi', () => {
         expect(JSON.parse(profile[1].params.metrics).model).toBe('MAG250');
     });
 
+    it('reports the selected MAG424 as one coherent box', async () => {
+        sendIpcEvent
+            .mockResolvedValueOnce({ js: { token: 'TOKEN-1', random: 'r1' } })
+            .mockResolvedValueOnce({ js: { status: 0 } });
+
+        await api.authenticate(portalUrl, macAddress, { stbModel: 'MAG424' });
+
+        const [profile] = callsByAction('get_profile');
+        expect(profile[1].params).toEqual(
+            expect.objectContaining({
+                stb_type: 'MAG424',
+                ver: expect.stringContaining('2.20.02-pub-424'),
+                hw_version: '1.7-BD-00',
+                image_version: '220',
+                api_signature: '366',
+                client_type: 'STB',
+                num_banks: '2',
+                video_out: 'hdmi',
+                hd: '1',
+            })
+        );
+        expect(JSON.parse(profile[1].params.metrics).model).toBe('MAG424');
+        // The transport picks the matching User-Agent pair from this.
+        for (const action of ['handshake', 'get_profile']) {
+            expect(callsByAction(action)[0][1].stbModel).toBe('MAG424');
+        }
+    });
+
+    it('leaves the model off the transport payload for the default box', async () => {
+        sendIpcEvent
+            .mockResolvedValueOnce({ js: { token: 'TOKEN-1', random: 'r1' } })
+            .mockResolvedValueOnce({ js: { status: 0 } });
+
+        await api.authenticate(portalUrl, macAddress, { stbModel: 'MAG250' });
+
+        for (const action of ['handshake', 'get_profile']) {
+            expect(callsByAction(action)[0][1]).not.toHaveProperty('stbModel');
+        }
+        expect(callsByAction('get_profile')[0][1].params.stb_type).toBe(
+            'MAG250'
+        );
+    });
+
     it('keeps the box description out of the flow-control params', async () => {
         // The constants are spread first, so a name collision would let them
         // silently overwrite a computed value.

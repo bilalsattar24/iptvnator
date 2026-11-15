@@ -70,6 +70,7 @@ export function hasValidBackupEntryData(entry: unknown): boolean {
                   'stalkerDeviceId2',
                   'stalkerSignature1',
                   'stalkerSignature2',
+                  'stalkerStbModel',
               ];
     if (
         stringFields.some(

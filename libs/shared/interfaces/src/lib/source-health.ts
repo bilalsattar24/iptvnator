@@ -61,6 +61,7 @@ export function sourceHealthKey(p: Partial<PlaylistMeta>): string {
         p.stalkerDeviceId2,
         p.stalkerSignature1,
         p.stalkerSignature2,
+        p.stalkerStbModel,
     ]);
 }
 export function accountHealth(

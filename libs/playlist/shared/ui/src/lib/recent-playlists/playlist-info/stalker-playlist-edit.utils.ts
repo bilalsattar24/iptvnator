@@ -3,6 +3,7 @@ import {
     normalizeStalkerMacAddress,
     normalizeXtreamServerUrl,
     normalizeStalkerSerialNumber,
+    normalizeStalkerStbModel,
     type Playlist,
     type PlaylistMeta,
 } from '@iptvnator/shared/interfaces';
@@ -19,6 +20,7 @@ const STALKER_CONNECTION_FIELDS = [
     'stalkerDeviceId2',
     'stalkerSignature1',
     'stalkerSignature2',
+    'stalkerStbModel',
 ] as const;
 
 type StalkerConnectionField = (typeof STALKER_CONNECTION_FIELDS)[number];
@@ -50,6 +52,10 @@ function comparableConnectionValue(
 ): string {
     if (field === 'portalUrl') {
         return value?.trim() ?? '';
+    }
+    if (field === 'stalkerStbModel') {
+        // The default model is stored absent or explicitly; both are equal.
+        return normalizeStalkerStbModel(value) ?? '';
     }
     if (field === 'stalkerSerialNumber') {
         return normalizeStalkerSerialNumber(value) ?? '';

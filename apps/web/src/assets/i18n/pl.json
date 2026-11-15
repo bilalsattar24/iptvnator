@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "Wpisz adres MAC z 12 cyframi szesnastkowymi, na przykład 00:1A:79:12:34:56.",
             "SERIAL_NUMBER": "Numer seryjny (opcjonalnie)",
             "SERIAL_NUMBER_HINT": "Użyj, jeśli konto jest już zarejestrowane u dostawcy",
+            "STB_MODEL": "Model dekodera",
+            "STB_MODEL_HINT": "Użyj modelu zarejestrowanego przez dostawcę dla tego adresu MAC",
             "DEVICE_ID_1": "ID urządzenia 1 (opcjonalnie)",
             "DEVICE_ID_2": "ID urządzenia 2 (opcjonalnie)",
             "DEVICE_ID_HINT": "64 znaki szesnastkowe – użyj, jeśli dostawca wymaga konkretnego ID urządzenia",

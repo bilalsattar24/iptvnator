@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "00:1A:79:12:34:56과 같이 12자리 16진수로 이루어진 MAC 주소를 입력하세요.",
             "SERIAL_NUMBER": "시리얼 번호 (선택 사항)",
             "SERIAL_NUMBER_HINT": "공급자에 이미 등록된 경우 사용",
+            "STB_MODEL": "셋톱박스 모델",
+            "STB_MODEL_HINT": "공급자가 이 MAC 주소에 등록한 모델을 사용하세요",
             "DEVICE_ID_1": "기기 ID 1 (선택 사항)",
             "DEVICE_ID_2": "기기 ID 2 (선택 사항)",
             "DEVICE_ID_HINT": "16진수 64자 - 공급자가 특정 기기 ID를 요구할 때 사용",

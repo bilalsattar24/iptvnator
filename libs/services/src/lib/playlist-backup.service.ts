@@ -51,6 +51,7 @@ import {
     normalizeParentalLockGroupTitles,
     normalizeParentalLockStalkerCategories,
     normalizeParentalLockXtreamCategories,
+    normalizeStalkerStbModel,
     ParentalLockPlaylistLocks,
     StalkerBackupLockedCategory,
     XtreamBackupHiddenCategory,
@@ -628,6 +629,9 @@ export class PlaylistBackupService {
                 ...(playlist.stalkerSignature2
                     ? { stalkerSignature2: playlist.stalkerSignature2 }
                     : {}),
+                ...(playlist.stalkerStbModel
+                    ? { stalkerStbModel: playlist.stalkerStbModel }
+                    : {}),
             },
             userState: {
                 ...this.optionalLockedStalkerCategories(playlist._id),
@@ -1107,6 +1111,9 @@ export class PlaylistBackupService {
             stalkerDeviceId2: entry.connection.stalkerDeviceId2,
             stalkerSignature1: entry.connection.stalkerSignature1,
             stalkerSignature2: entry.connection.stalkerSignature2,
+            stalkerStbModel: normalizeStalkerStbModel(
+                entry.connection.stalkerStbModel
+            ),
             stalkerToken: undefined,
             stalkerAccountInfo: undefined,
         };

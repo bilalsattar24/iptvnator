@@ -22,6 +22,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Store } from '@ngrx/store';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -47,6 +48,7 @@ import {
 } from '@iptvnator/shared/interfaces';
 import { PasswordVisibilityToggleDirective } from '@iptvnator/ui/components/password-visibility-toggle';
 import {
+    createStalkerStbModelSelect,
     type StalkerImportFeedback,
     toStalkerImportFeedback,
     toStalkerPlaylistIdentityFields,
@@ -74,6 +76,7 @@ interface StalkerSettledIdentity {
         MatIcon,
         MatIconButton,
         MatInputModule,
+        MatSelectModule,
         PasswordVisibilityToggleDirective,
         ReactiveFormsModule,
         TranslatePipe,
@@ -87,6 +90,7 @@ interface StalkerSettledIdentity {
 export class StalkerPortalImportComponent {
     readonly addClicked = output<void>();
     readonly URL_REGEX = /^https?:\/\/[^ "\s]+$/i;
+    readonly stbModelSelect = createStalkerStbModelSelect();
 
     readonly form = new FormGroup({
         _id: new FormControl(createRandomId()),
@@ -100,6 +104,7 @@ export class StalkerPortalImportComponent {
         deviceId2: new FormControl(''),
         signature1: new FormControl(''),
         signature2: new FormControl(''),
+        stbModel: this.stbModelSelect.control,
         password: new FormControl(''),
         username: new FormControl(''),
         portalUrl: new FormControl('', [
@@ -161,6 +166,7 @@ export class StalkerPortalImportComponent {
         const c = this.form.controls;
         return (
             Boolean(this.feedback()) ||
+            c.stbModel.value !== c.stbModel.defaultValue ||
             [
                 c.serialNumber,
                 c.deviceId1,
@@ -414,6 +420,7 @@ export class StalkerPortalImportComponent {
                 deviceId2: identity.deviceId2 || undefined,
                 signature1: formValue.signature1 ?? undefined,
                 signature2: formValue.signature2 ?? undefined,
+                stbModel: formValue.stbModel,
             });
 
             // Probe candidate endpoints and classify the portal by observed
@@ -537,6 +544,7 @@ export class StalkerPortalImportComponent {
                 deviceId2: _deviceId2,
                 signature1: _signature1,
                 signature2: _signature2,
+                stbModel: _stbModel,
                 ...playlistFormValue
             } = formValue;
 

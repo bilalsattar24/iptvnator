@@ -1,5 +1,6 @@
 import { PlaylistRecentlyViewedItem } from './playlist-recently-viewed.interface';
 import { StalkerPortalItem } from './stalker-portal-item.interface';
+import type { StalkerStbModel } from './stalker-stb-profile.const';
 
 /**
  * An interface that describe the possible states of the playlist update/refresh process
@@ -110,6 +111,12 @@ export interface Playlist {
     stalkerSignature1?: string;
     /** Optional signature 2 for stalker portal - required by some portals for device verification */
     stalkerSignature2?: string;
+    /**
+     * Set-top box model this playlist presents to the portal (see
+     * `getStalkerStbProfile`). Absent means the default MAG250. Some panels
+     * pin the model a MAC first registered with and refuse any other.
+     */
+    stalkerStbModel?: StalkerStbModel;
     /** Account info from get_profile call */
     stalkerAccountInfo?: {
         login?: string;

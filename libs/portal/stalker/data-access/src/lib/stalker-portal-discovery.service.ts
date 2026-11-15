@@ -3,6 +3,7 @@ import { Injectable, inject } from '@angular/core';
 import { DataService, resetHostConnectivityGuard } from '@iptvnator/services';
 import {
     STALKER_REQUEST,
+    normalizeStalkerStbModel,
     readStalkerPortalPageUrl,
 } from '@iptvnator/shared/interfaces';
 import { createLogger } from '@iptvnator/portal/shared/util';
@@ -175,7 +176,11 @@ export class StalkerPortalDiscoveryService {
             if (options.signal?.aborted) return { status: 'unreachable' };
             let probeResponse: unknown;
             try {
-                probeResponse = await this.probeContent(candidate, macAddress);
+                probeResponse = await this.probeContent(
+                    candidate,
+                    macAddress,
+                    identity.stbModel
+                );
             } catch (error) {
                 if (options.signal?.aborted) return { status: 'unreachable' };
                 const status = getStalkerRequestErrorStatus(error);
@@ -383,12 +388,18 @@ export class StalkerPortalDiscoveryService {
      * cheapest action every Stalker-compatible panel implements and the
      * canonical middleware gates behind the Bearer token.
      */
-    private probeContent(url: string, macAddress: string): Promise<unknown> {
+    private probeContent(
+        url: string,
+        macAddress: string,
+        stbModel?: string
+    ): Promise<unknown> {
+        const model = normalizeStalkerStbModel(stbModel);
         return withTimeout(
             Promise.resolve(
                 this.dataService.sendIpcEvent<unknown>(STALKER_REQUEST, {
                     url,
                     macAddress,
+                    ...(model ? { stbModel: model } : {}),
                     params: {
                         type: 'itv',
                         action: 'get_genres',

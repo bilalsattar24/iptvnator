@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "Gib eine MAC-Adresse mit 12 hexadezimalen Ziffern ein, zum Beispiel 00:1A:79:12:34:56.",
             "SERIAL_NUMBER": "Seriennummer (optional)",
             "SERIAL_NUMBER_HINT": "Verwenden, wenn bereits beim Anbieter registriert",
+            "STB_MODEL": "Set-Top-Box-Modell",
+            "STB_MODEL_HINT": "Das Modell verwenden, das der Anbieter für diese MAC-Adresse registriert hat",
             "DEVICE_ID_1": "Geräte-ID 1 (optional)",
             "DEVICE_ID_2": "Geräte-ID 2 (optional)",
             "DEVICE_ID_HINT": "64 Hex-Zeichen – verwenden, wenn der Anbieter eine bestimmte Geräte-ID verlangt",

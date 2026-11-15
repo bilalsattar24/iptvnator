@@ -17,6 +17,7 @@ import {
     type StalkerResolvedConnectionApplyOptions,
 } from '@iptvnator/playlist/shared/ui/stalker-connection-editor';
 import {
+    DEFAULT_STALKER_STB_MODEL,
     normalizeStalkerPortalIdentity,
     type Playlist,
     type PlaylistMeta,
@@ -97,6 +98,7 @@ export class AppStalkerPlaylistConnectionEditorService implements StalkerPlaylis
             deviceId2: playlist.stalkerDeviceId2,
             signature1: playlist.stalkerSignature1,
             signature2: playlist.stalkerSignature2,
+            stbModel: playlist.stalkerStbModel,
         });
         const normalizedPlaylist: PlaylistMetaUpdate = {
             ...playlist,
@@ -105,6 +107,9 @@ export class AppStalkerPlaylistConnectionEditorService implements StalkerPlaylis
             stalkerDeviceId2: identity.deviceId2 ?? '',
             stalkerSignature1: identity.signature1 ?? '',
             stalkerSignature2: identity.signature2 ?? '',
+            // Written explicitly (the default included) so switching back to
+            // MAG250 replaces a stored model instead of leaving it behind.
+            stalkerStbModel: identity.stbModel ?? DEFAULT_STALKER_STB_MODEL,
         };
         const fence = await this.beginEditFence(
             this.toRuntimePlaylist(normalizedPlaylist),

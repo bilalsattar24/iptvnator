@@ -134,6 +134,7 @@ export class PwaService extends DataService {
                     params: Record<string, string>;
                     token?: string;
                     serialNumber?: string;
+                    stbModel?: string;
                     silent?: boolean;
                     skipConnectionGuard?: boolean;
                 }
@@ -378,6 +379,8 @@ export class PwaService extends DataService {
         macAddress: string;
         token?: string;
         serialNumber?: string;
+        /** Set-top box model; the proxy turns it into the User-Agent pair. */
+        stbModel?: string;
         /** Endpoint-discovery probes expect failures; no error snackbar. */
         silent?: boolean;
         /**
@@ -415,6 +418,9 @@ export class PwaService extends DataService {
                         ...(token ? { token } : {}),
                         ...(payload.serialNumber
                             ? { serialNumber: payload.serialNumber }
+                            : {}),
+                        ...(payload.stbModel
+                            ? { stbModel: payload.stbModel }
                             : {}),
                         // Endpoint-discovery probes are exempt from the backend's
                         // connectivity guard. Dropping this here would let two probes

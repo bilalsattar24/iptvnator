@@ -2,6 +2,7 @@ import { DatePipe } from '@angular/common';
 import { UntypedFormBuilder } from '@angular/forms';
 import { PlaylistMeta } from '@iptvnator/shared/interfaces';
 import { createPlaylistDetailsForm } from './playlist-info-form';
+import { hasStalkerConnectionChanged } from './stalker-playlist-edit.utils';
 
 const xtream = {
     _id: 'xtream',
@@ -70,6 +71,44 @@ describe('playlist edit connection validation', () => {
             password: '',
         });
         expect(details.valid).toBe(true);
+    });
+
+    it('shows the stored set-top box model, MAG250 when none is stored', () => {
+        const stalker = {
+            ...xtream,
+            serverUrl: undefined,
+            portalUrl: 'https://portal.test/c/',
+            macAddress: '00:1A:79:AA:BB:CC',
+        } as PlaylistMeta;
+
+        expect(form(stalker).get('stalkerStbModel')?.value).toBe('MAG250');
+        expect(
+            form({ ...stalker, stalkerStbModel: 'MAG424' }).get(
+                'stalkerStbModel'
+            )?.value
+        ).toBe('MAG424');
+    });
+
+    it('treats a model change as a connection change, the default as none', () => {
+        const stored = {
+            _id: 'stalker',
+            title: 'Stalker',
+            portalUrl: 'https://portal.test/c/',
+            macAddress: '00:1A:79:AA:BB:CC',
+        } as PlaylistMeta as never;
+
+        expect(
+            hasStalkerConnectionChanged(stored, {
+                ...(stored as PlaylistMeta),
+                stalkerStbModel: 'MAG250',
+            })
+        ).toBe(false);
+        expect(
+            hasStalkerConnectionChanged(stored, {
+                ...(stored as PlaylistMeta),
+                stalkerStbModel: 'MAG424',
+            })
+        ).toBe(true);
     });
 
     it('does not require connection fields for M3U metadata edits', () => {

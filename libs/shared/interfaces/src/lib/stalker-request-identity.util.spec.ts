@@ -1,8 +1,36 @@
 import { LEGACY_DEFAULT_STALKER_SERIAL } from './stalker-identity.utils';
 import { buildStalkerIdentityRequestContext } from './stalker-request-identity.util';
+import { STALKER_MAG_USER_AGENT } from './stalker-stb-profile.const';
 
 describe('buildStalkerIdentityRequestContext', () => {
     const macAddress = '00:1A:79:AA:BB:CC';
+
+    it('presents the MAG250 User-Agent pair by default', () => {
+        const context = buildStalkerIdentityRequestContext({
+            macAddress,
+            params: { type: 'itv', action: 'get_genres' },
+        });
+
+        expect(context.headers['User-Agent']).toBe(STALKER_MAG_USER_AGENT);
+        expect(context.headers['X-User-Agent']).toBe(STALKER_MAG_USER_AGENT);
+    });
+
+    it('presents the User-Agent pair of the selected box model', () => {
+        const context = buildStalkerIdentityRequestContext({
+            macAddress,
+            params: { type: 'itv', action: 'get_genres' },
+            stbModel: 'MAG424',
+        });
+
+        expect(context.headers['User-Agent']).toContain(
+            'MAG200 stbapp ver: 2 rev: 250'
+        );
+        expect(context.headers['X-User-Agent']).toBe(
+            'Model: MAG424; Link: WiFi'
+        );
+        // The model selects headers only; it never reaches the query.
+        expect(context.requestParams).not.toHaveProperty('stbModel');
+    });
 
     it('does not add SN header or force get_profile SN fields when serial is absent', () => {
         const context = buildStalkerIdentityRequestContext({

@@ -240,6 +240,9 @@ export const playlistReducers = [
                         ...(p.stalkerSignature2 !== undefined
                             ? { stalkerSignature2: p.stalkerSignature2 }
                             : {}),
+                        ...(p.stalkerStbModel !== undefined
+                            ? { stalkerStbModel: p.stalkerStbModel }
+                            : {}),
                         ...(p.stalkerSessionPatch !== undefined
                             ? {
                                   stalkerToken:

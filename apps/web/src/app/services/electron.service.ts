@@ -315,6 +315,7 @@ export class ElectronService extends DataService {
         requestId?: string;
         token?: string;
         serialNumber?: string;
+        stbModel?: string;
         /** Endpoint-discovery probes expect failures; no error snackbar. */
         silent?: boolean;
         /** Endpoint-discovery probes are exempt from the connectivity guard. */

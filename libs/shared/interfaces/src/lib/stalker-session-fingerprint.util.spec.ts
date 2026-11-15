@@ -23,6 +23,27 @@ describe('shared Stalker session fingerprints', () => {
         );
     });
 
+    it('keeps the default box model out of the fingerprint', () => {
+        // Existing sessions were negotiated as a MAG250 with no model stored.
+        expect(
+            stalkerSessionFingerprint({
+                ...connection,
+                stalkerStbModel: 'MAG250',
+            })
+        ).toBe(stalkerSessionFingerprint(connection));
+    });
+
+    it('binds the token to a non-default box model', () => {
+        // Panels pin the model per MAC; a session negotiated as one box must
+        // not be replayed as another.
+        expect(
+            stalkerSessionFingerprint({
+                ...connection,
+                stalkerStbModel: 'MAG424',
+            })
+        ).not.toBe(stalkerSessionFingerprint(connection));
+    });
+
     it.each([
         'portalUrl',
         'macAddress',

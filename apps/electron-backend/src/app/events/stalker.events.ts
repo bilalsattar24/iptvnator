@@ -65,6 +65,8 @@ ipcMain.handle(
             params: Record<string, string | number>;
             token?: string;
             serialNumber?: string;
+            /** Set-top box model of the playlist; selects the User-Agent pair. */
+            stbModel?: string;
             requestId?: string;
             probe?: SourceProbeContext;
             /**
@@ -90,14 +92,22 @@ ipcMain.handle(
         let socketConnected = false;
         const countsTowardsGuard = !payload.skipConnectionGuard;
         try {
-            const { url, macAddress, params, token, serialNumber, requestId } =
-                payload;
+            const {
+                url,
+                macAddress,
+                params,
+                token,
+                serialNumber,
+                stbModel,
+                requestId,
+            } = payload;
             const { requestParams, headers, effectiveSerialNumber } =
                 buildStalkerIdentityRequestContext({
                     macAddress,
                     params,
                     token,
                     serialNumber,
+                    stbModel,
                 });
 
             // SSRF/LFI guard: block non-http(s)/credentialed portal URLs.
@@ -195,6 +205,7 @@ ipcMain.handle(
                     portalUrl: url,
                     macAddress,
                     serialNumber: effectiveSerialNumber,
+                    stbModel,
                     token,
                 });
             }

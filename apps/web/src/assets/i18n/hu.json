@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "Adjon meg 12 hexadecimális számjegyből álló MAC-címet, például 00:1A:79:12:34:56.",
             "SERIAL_NUMBER": "Sorozatszám (nem kötelező)",
             "SERIAL_NUMBER_HINT": "Akkor használja, ha az eszköz már regisztrálva van a szolgáltatónál",
+            "STB_MODEL": "Set-top box típusa",
+            "STB_MODEL_HINT": "Azt a típust használja, amelyet a szolgáltató ehhez a MAC-címhez regisztrált",
             "DEVICE_ID_1": "1. eszközazonosító (nem kötelező)",
             "DEVICE_ID_2": "2. eszközazonosító (nem kötelező)",
             "DEVICE_ID_HINT": "64 hexadecimális karakter – csak akkor adja meg, ha a szolgáltató meghatározott eszközazonosítót kér",

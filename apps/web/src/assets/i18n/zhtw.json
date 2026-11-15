@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "請輸入由 12 位十六進位數字組成的 MAC 位址，例如 00:1A:79:12:34:56。",
             "SERIAL_NUMBER": "序號（選填）",
             "SERIAL_NUMBER_HINT": "若已向供應商註冊，請填寫此項",
+            "STB_MODEL": "機上盒型號",
+            "STB_MODEL_HINT": "使用供應商為此 MAC 位址註冊的型號",
             "DEVICE_ID_1": "裝置 ID 1（選填）",
             "DEVICE_ID_2": "裝置 ID 2（選填）",
             "DEVICE_ID_HINT": "64 個十六進位字元——若供應商要求特定裝置 ID 時請填寫",

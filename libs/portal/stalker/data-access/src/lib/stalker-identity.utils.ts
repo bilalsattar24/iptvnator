@@ -23,6 +23,7 @@ export function getStalkerPortalIdentityFromPlaylist(
         | 'stalkerDeviceId2'
         | 'stalkerSignature1'
         | 'stalkerSignature2'
+        | 'stalkerStbModel'
     >
 ): StalkerPortalIdentity {
     return normalizeSharedStalkerPortalIdentity({
@@ -31,5 +32,6 @@ export function getStalkerPortalIdentityFromPlaylist(
         deviceId2: playlist.stalkerDeviceId2,
         signature1: playlist.stalkerSignature1,
         signature2: playlist.stalkerSignature2,
+        stbModel: playlist.stalkerStbModel,
     });
 }

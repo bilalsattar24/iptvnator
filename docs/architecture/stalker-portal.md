@@ -564,11 +564,11 @@ field the user leaves blank stays blank — nothing is invented for it, and
 nothing empty is forwarded to `get_profile`. The one way a value appears
 without being typed is the explicit import-time opt-in described under
 "Deriving device IDs from the MAC" below, which writes into the visible fields
-first. (The fixed MAG250 description `get_profile` reports is separate: it
-describes the emulated box, not the account — see "Reported device profile".)
+first. (The box description `get_profile` reports is separate: it describes the
+emulated box, not the account — see "Reported device profile".)
 
-Import and Edit keep serial, device IDs, signatures and optional credentials
-in an “Additional provider settings” disclosure. Its controls stay mounted:
+Import and Edit keep the set-top box model, serial, device IDs, signatures and
+optional credentials in an “Additional provider settings” disclosure. Its controls stay mounted:
 folding it never clears or disables values. Prefilled/invalid values reveal it,
 as does import authentication feedback; clearing the last optional value does
 not close an editor the user is working in. Device-ID derivation remains an
@@ -771,20 +771,38 @@ pinned, and IPTVnator has to send it or be refused.
 
 ### Reported device profile
 
-`get_profile` carries a fixed MAG250 description from
-`STALKER_STB_PROFILE_PARAMS`
+`get_profile` carries a description of the emulated box from
+`getStalkerStbProfile()`
 (`libs/shared/interfaces/src/lib/stalker-stb-profile.const.ts`): `ver`,
-`stb_type` (`MAG250`, previously sent as an empty string), `hw_version`,
+`stb_type` (previously sent as an empty string), `hw_version`,
 `image_version`, `client_type`, plus the `num_banks`/`video_out`/`hd` the
 request already carried. The stock middleware stores these for the admin panel
 and only an operator's optional `access_filter.php` inspects them, so they are
 free to send — but they must describe the same box as `metrics.model` and the
-`STALKER_MAG_USER_AGENT` header, or the profile reads as a forgery.
+`User-Agent` / `X-User-Agent` headers, or the profile reads as a forgery.
 
-They are constants, identical for every playlist, and deliberately excluded
-from `stalkerIdentityFingerprint` / `stalkerSessionFingerprint`: including them
-would invalidate every persisted session for no gain, since the portal binds
-nothing to them.
+The box model is a per-playlist choice (`Playlist.stalkerStbModel`, the "Set-top
+box model" select in “Additional provider settings” on Import and Edit). Some
+panels pin the model a MAC first registered with and answer any other
+`stb_type` with a device conflict, so a user who registered the MAC from
+another client has to present the same model. Each model is one complete
+profile: `get_profile` params and `metrics.model` in `StalkerAuthApi`, and the
+`User-Agent` / `X-User-Agent` pair that both transports build in
+`buildStalkerIdentityRequestContext()` from the `stbModel` request option (an
+IPC payload field in Electron, a stripped control query parameter on the
+web-backend `/stalker` proxy). Same-origin playback headers follow it too.
+
+| Model | `stb_type` / `metrics.model` | Firmware (`image_version`) | `X-User-Agent` |
+| --- | --- | --- | --- |
+| MAG250 (default) | `MAG250` | 0.2.18 (`218`) | same as `User-Agent` (`… MAG250`) |
+| MAG424 | `MAG424` | 2.20.02 (`220`), `api_signature=366` | `Model: MAG424; Link: WiFi` |
+
+MAG250 keeps exactly the values sent before the choice existed, and is stored
+absent: `normalizeStalkerStbModel()` maps the default, blank and unknown values
+to `undefined`. The model's constants stay out of the identity/session
+fingerprints, but a non-default model is part of them — a session negotiated
+as one box is never replayed as another — while the default leaves every
+persisted fingerprint unchanged.
 
 ## Session Authentication Lifecycle
 

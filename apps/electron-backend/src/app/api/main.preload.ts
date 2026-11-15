@@ -827,6 +827,7 @@ const electronApi: ElectronBridgeApi = {
         params: Record<string, string>;
         token?: string;
         serialNumber?: string;
+        stbModel?: string;
         requestId?: string;
         skipConnectionGuard?: boolean;
     }) => ipcRenderer.invoke('STALKER_REQUEST', payload),

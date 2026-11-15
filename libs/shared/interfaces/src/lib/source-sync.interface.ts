@@ -19,6 +19,7 @@ export interface SourceDefinition {
     stalkerDeviceId2?: string;
     stalkerSignature1?: string;
     stalkerSignature2?: string;
+    stalkerStbModel?: string;
     rawM3u?: string;
 }
 

@@ -1,6 +1,7 @@
 import {
     PlaylistMeta,
     STALKER_MAG_USER_AGENT,
+    getStalkerStbProfile,
     isStalkerStreamCredentialSafe,
 } from '@iptvnator/shared/interfaces';
 import {
@@ -85,12 +86,14 @@ export function buildStalkerExternalPlaybackHeaders(
     // Both the real User-Agent and Stalker's X-User-Agent, matching what the
     // API request path sends — a portal that filters streams on the MAG UA
     // never saw it here before (audit finding: same-origin set only
-    // X-User-Agent). A playlist-level custom UA keeps precedence.
-    const magUserAgent = playlist.userAgent?.trim() || STALKER_MAG_USER_AGENT;
+    // X-User-Agent). Both follow the playlist's box model; a playlist-level
+    // custom UA keeps precedence.
+    const stbProfile = getStalkerStbProfile(playlist.stalkerStbModel);
+    const magUserAgent = playlist.userAgent?.trim() || stbProfile.userAgent;
     const headers: Record<string, string> = {
         Cookie: cookieParts.join('; '),
         'User-Agent': magUserAgent,
-        'X-User-Agent': STALKER_MAG_USER_AGENT,
+        'X-User-Agent': stbProfile.xUserAgent,
     };
 
     if (serialNumber) {

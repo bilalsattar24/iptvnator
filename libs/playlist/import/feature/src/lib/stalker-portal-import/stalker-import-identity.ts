@@ -2,7 +2,26 @@ import {
     asStalkerPortalError,
     type StalkerPortalErrorKind,
 } from '@iptvnator/portal/stalker/data-access';
-import type { StalkerPortalIdentity } from '@iptvnator/shared/interfaces';
+import { FormControl } from '@angular/forms';
+import {
+    DEFAULT_STALKER_STB_MODEL,
+    STALKER_STB_MODELS,
+    type StalkerPortalIdentity,
+    type StalkerStbModel,
+} from '@iptvnator/shared/interfaces';
+
+/**
+ * The import form's set-top box model select: the offered models and a
+ * control that starts on — and `reset()`s to — the default MAG250.
+ */
+export function createStalkerStbModelSelect() {
+    return {
+        options: STALKER_STB_MODELS,
+        control: new FormControl<string>(DEFAULT_STALKER_STB_MODEL, {
+            nonNullable: true,
+        }),
+    };
+}
 
 /** The `stalker*` playlist columns the import form writes. */
 export interface StalkerPlaylistIdentityFields {
@@ -11,6 +30,7 @@ export interface StalkerPlaylistIdentityFields {
     stalkerDeviceId2?: string;
     stalkerSignature1?: string;
     stalkerSignature2?: string;
+    stalkerStbModel?: StalkerStbModel;
 }
 
 /**
@@ -39,6 +59,8 @@ export function toStalkerPlaylistIdentityFields(
         ...(identity.signature2
             ? { stalkerSignature2: identity.signature2 }
             : {}),
+        // Only a non-default model is stored; absent means MAG250.
+        ...(identity.stbModel ? { stalkerStbModel: identity.stbModel } : {}),
     };
 }
 

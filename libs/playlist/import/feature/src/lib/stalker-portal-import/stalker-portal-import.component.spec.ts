@@ -222,6 +222,46 @@ describe('StalkerPortalImportComponent identity handling', () => {
         expect(playlist.signature2).toBeUndefined();
     });
 
+    it('authenticates and persists the selected set-top box model', async () => {
+        component.form.patchValue({
+            _id: 'playlist-model',
+            title: 'Pinned Model Portal',
+            macAddress: '00:1A:79:AA:BB:CC',
+            portalUrl: 'http://portal.example.invalid',
+            stbModel: 'MAG424',
+            importDate: '2026-05-15T00:00:00.000Z',
+        });
+
+        await component.addPlaylist();
+
+        expect(portalDiscovery.discover).toHaveBeenCalledWith(
+            'http://portal.example.invalid',
+            '00:1A:79:AA:BB:CC',
+            { stbModel: 'MAG424' },
+            expect.anything()
+        );
+        const playlist = store.dispatch.mock.calls[0][0].playlist;
+        expect(playlist.stalkerStbModel).toBe('MAG424');
+        expect(playlist.stbModel).toBeUndefined();
+    });
+
+    it('keeps the default model absent from the stored playlist', async () => {
+        component.form.patchValue({
+            _id: 'playlist-default-model',
+            title: 'Default Model Portal',
+            macAddress: '00:1A:79:AA:BB:CC',
+            portalUrl: 'http://portal.example.invalid',
+            importDate: '2026-05-15T00:00:00.000Z',
+        });
+        expect(component.form.controls.stbModel.value).toBe('MAG250');
+
+        await component.addPlaylist();
+
+        const playlist = store.dispatch.mock.calls[0][0].playlist;
+        expect(playlist.stalkerStbModel).toBeUndefined();
+        expect(playlist.stbModel).toBeUndefined();
+    });
+
     it('passes the entered login and password into discovery', async () => {
         component.form.patchValue({
             _id: 'playlist-login',

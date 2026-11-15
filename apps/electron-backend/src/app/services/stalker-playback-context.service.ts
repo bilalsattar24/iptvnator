@@ -1,6 +1,6 @@
 import {
-    STALKER_MAG_USER_AGENT,
     buildStalkerSerialCfduid,
+    getStalkerStbProfile,
     isStalkerStreamCredentialSafe,
     normalizeStalkerSerialNumber,
 } from '@iptvnator/shared/interfaces';
@@ -71,12 +71,14 @@ export function rememberStalkerPlaybackContext(input: {
     portalUrl: string;
     macAddress: string;
     serialNumber?: string;
+    stbModel?: string;
     token?: string;
 }) {
     const streamKey = normalizeStreamUrl(input.streamUrl);
     if (!streamKey || !input.macAddress) return;
 
     const serialNumber = normalizeStalkerSerialNumber(input.serialNumber);
+    const stbProfile = getStalkerStbProfile(input.stbModel);
     const cookieParts = [
         `mac=${input.macAddress}`,
         'stb_lang=en_US@rg=dezzzz',
@@ -119,8 +121,8 @@ export function rememberStalkerPlaybackContext(input: {
           }
         : {
               Cookie: cookieParts.join('; '),
-              'User-Agent': STALKER_MAG_USER_AGENT,
-              'X-User-Agent': STALKER_MAG_USER_AGENT,
+              'User-Agent': stbProfile.userAgent,
+              'X-User-Agent': stbProfile.xUserAgent,
           };
 
     if (!crossOriginStream && portalOrigin) {

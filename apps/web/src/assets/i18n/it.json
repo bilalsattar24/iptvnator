@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "Inserisci un indirizzo MAC con 12 cifre esadecimali, ad esempio 00:1A:79:12:34:56.",
             "SERIAL_NUMBER": "Numero di serie (opzionale)",
             "SERIAL_NUMBER_HINT": "Usa se già registrato presso il fornitore",
+            "STB_MODEL": "Modello del decoder",
+            "STB_MODEL_HINT": "Usa il modello registrato dal fornitore per questo indirizzo MAC",
             "DEVICE_ID_1": "ID dispositivo 1 (opzionale)",
             "DEVICE_ID_2": "ID dispositivo 2 (opzionale)",
             "DEVICE_ID_HINT": "64 caratteri esadecimali — usa se il fornitore richiede un ID dispositivo specifico",

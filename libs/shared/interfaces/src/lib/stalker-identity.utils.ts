@@ -1,5 +1,9 @@
 import { normalizeStalkerMacAddress } from './stalker-mac-address.util';
 import { loadStalkerProtocolHash } from './stalker-protocol-hash.loader';
+import {
+    normalizeStalkerStbModel,
+    type StalkerStbModel,
+} from './stalker-stb-profile.const';
 
 export const LEGACY_DEFAULT_STALKER_SERIAL = 'BEDACD4569BAF';
 const STALKER_CFDUID_LENGTH = 32;
@@ -11,6 +15,8 @@ export interface StalkerPortalIdentity {
     deviceId2?: string;
     signature1?: string;
     signature2?: string;
+    /** Set-top box model; absent means the default MAG250. */
+    stbModel?: StalkerStbModel;
 }
 
 export function normalizeStalkerIdentityValue(
@@ -34,14 +40,24 @@ export function normalizeStalkerSerialNumber(
     return trimmed;
 }
 
+/**
+ * Raw identity input: form and storage values arrive as plain strings, and
+ * an unknown or default model normalizes away.
+ */
+export type StalkerPortalIdentityInput = Omit<
+    StalkerPortalIdentity,
+    'stbModel'
+> & { stbModel?: string };
+
 export function normalizeStalkerPortalIdentity(
-    identity: StalkerPortalIdentity | undefined | null
+    identity: StalkerPortalIdentityInput | undefined | null
 ): StalkerPortalIdentity {
     const serialNumber = normalizeStalkerSerialNumber(identity?.serialNumber);
     const deviceId1 = normalizeStalkerIdentityValue(identity?.deviceId1);
     const deviceId2 = normalizeStalkerIdentityValue(identity?.deviceId2);
     const signature1 = normalizeStalkerIdentityValue(identity?.signature1);
     const signature2 = normalizeStalkerIdentityValue(identity?.signature2);
+    const stbModel = normalizeStalkerStbModel(identity?.stbModel);
 
     return {
         ...(serialNumber ? { serialNumber } : {}),
@@ -49,6 +65,7 @@ export function normalizeStalkerPortalIdentity(
         ...(deviceId2 ? { deviceId2 } : {}),
         ...(signature1 ? { signature1 } : {}),
         ...(signature2 ? { signature2 } : {}),
+        ...(stbModel ? { stbModel } : {}),
     };
 }
 

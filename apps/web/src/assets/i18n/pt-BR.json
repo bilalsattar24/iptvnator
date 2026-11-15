@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "Digite um endereço MAC com 12 dígitos hexadecimais, por exemplo, 00:1A:79:12:34:56.",
             "SERIAL_NUMBER": "Número de série (opcional)",
             "SERIAL_NUMBER_HINT": "Use se já estiver registrado com o provedor",
+            "STB_MODEL": "Modelo do decodificador",
+            "STB_MODEL_HINT": "Use o modelo que o provedor registrou para este endereço MAC",
             "DEVICE_ID_1": "ID do dispositivo 1 (opcional)",
             "DEVICE_ID_2": "ID do dispositivo 2 (opcional)",
             "DEVICE_ID_HINT": "64 caracteres hexadecimais - use se o provedor exigir um ID de dispositivo específico",

@@ -560,6 +560,74 @@ describe('StalkerEvents portal page reached through redirects', () => {
         });
     });
 
+    it('follows a bare-origin candidate through a TLS downgrade to another node', async () => {
+        // `http://entry/portal.php` → `https://entry/` (path dropped) →
+        // `http://node/stalker_portal/c/`: neither the https→http downgrade
+        // nor the host change may stop the chain for a GET probe.
+        axiosMock
+            .mockResolvedValueOnce({
+                status: 301,
+                headers: { location: 'https://entry.example.invalid/' },
+                data: '',
+            })
+            .mockResolvedValueOnce({
+                status: 301,
+                headers: {
+                    location: 'http://node.example.invalid/stalker_portal/c/',
+                },
+                data: '',
+            })
+            .mockResolvedValueOnce({
+                status: 200,
+                headers: { 'content-type': 'text/html' },
+                data: '<html><script src="xpcom.common.js"></script></html>',
+            });
+
+        await expect(
+            probe('http://entry.example.invalid/portal.php')
+        ).resolves.toEqual({
+            stalkerPortalPage: 'http://node.example.invalid/stalker_portal/c/',
+        });
+        expect(axiosMock.mock.calls.map(([config]) => config.url)).toEqual([
+            expect.stringMatching(
+                /^http:\/\/entry\.example\.invalid\/portal\.php\?/
+            ),
+            'https://entry.example.invalid/',
+            'http://node.example.invalid/stalker_portal/c/',
+        ]);
+    });
+
+    it('sends the User-Agent pair of the selected box model', async () => {
+        axiosMock.mockResolvedValueOnce({
+            status: 200,
+            headers: { 'content-type': 'application/json' },
+            data: { js: [] },
+        });
+
+        await requestHandler(
+            {},
+            {
+                url: 'http://node.example.invalid/stalker_portal/server/load.php',
+                macAddress: MAC_ADDRESS,
+                stbModel: 'MAG424',
+                params: {
+                    type: 'itv',
+                    action: 'get_genres',
+                    JsHttpRequest: '1-xml',
+                },
+                silent: true,
+                skipConnectionGuard: true,
+            }
+        );
+
+        const [config] = axiosMock.mock.calls[0];
+        expect(config.headers['X-User-Agent']).toBe(
+            'Model: MAG424; Link: WiFi'
+        );
+        expect(config.headers['User-Agent']).toContain('MAG200 stbapp');
+        expect(config.url).not.toContain('stbModel');
+    });
+
     it('returns other HTML bodies unchanged', async () => {
         axiosMock
             .mockResolvedValueOnce({

@@ -151,6 +151,7 @@ export interface StalkerPlaylistBackupEntry extends PlaylistBackupBaseEntry {
         stalkerDeviceId2?: string;
         stalkerSignature1?: string;
         stalkerSignature2?: string;
+        stalkerStbModel?: string;
     };
     userState: {
         favorites: StalkerPortalItem[];

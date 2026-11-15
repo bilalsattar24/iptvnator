@@ -309,6 +309,8 @@
             "MAC_ADDRESS_ERROR": "请输入由 12 位十六进制数字组成的 MAC 地址，例如 00:1A:79:12:34:56。",
             "SERIAL_NUMBER": "序列号（可选）",
             "SERIAL_NUMBER_HINT": "如已在提供商处注册时使用",
+            "STB_MODEL": "机顶盒型号",
+            "STB_MODEL_HINT": "使用提供商为此 MAC 地址注册的型号",
             "DEVICE_ID_1": "设备 ID 1（可选）",
             "DEVICE_ID_2": "设备 ID 2（可选）",
             "DEVICE_ID_HINT": "64 位十六进制字符 — 如提供商需要特定设备 ID 时使用",

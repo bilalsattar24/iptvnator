@@ -242,6 +242,7 @@ export class PlaylistsService {
             stalkerDeviceId2: playlist.stalkerDeviceId2,
             stalkerSignature1: playlist.stalkerSignature1,
             stalkerSignature2: playlist.stalkerSignature2,
+            stalkerStbModel: playlist.stalkerStbModel,
             isFullStalkerPortal: playlist.isFullStalkerPortal,
             stalkerToken: playlist.stalkerToken,
             // Without these the Electron cold read loses the persisted
@@ -943,6 +944,9 @@ export class PlaylistsService {
                 ? {
                       stalkerSignature2: updatedPlaylist.stalkerSignature2,
                   }
+                : {}),
+            ...(updatedPlaylist.stalkerStbModel !== undefined
+                ? { stalkerStbModel: updatedPlaylist.stalkerStbModel }
                 : {}),
             ...(updatedPlaylist.stalkerSessionPatch !== undefined
                 ? {

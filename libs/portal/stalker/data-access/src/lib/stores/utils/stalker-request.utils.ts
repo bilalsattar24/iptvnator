@@ -2,6 +2,7 @@ import type { StalkerRequestOptions } from '../../stalker-request-options';
 import { DataService } from '@iptvnator/services';
 import {
     isFullStalkerPortalPlaylist,
+    normalizeStalkerStbModel,
     Playlist,
     PlaylistMeta,
     STALKER_REQUEST,
@@ -136,11 +137,14 @@ async function dispatchStalkerRequest<T>(
     const sessionPlaylist = toStalkerSessionPlaylist(playlist);
     await deps.stalkerSession.ensureToken(sessionPlaylist);
 
+    const stbModel = normalizeStalkerStbModel(playlist.stalkerStbModel);
     const response = await deps.dataService.sendIpcEvent<T>(STALKER_REQUEST, {
         url: playlist.portalUrl,
         macAddress: playlist.macAddress,
         params,
         ...(options.silent ? { silent: true } : {}),
+        // Token-free panels still see the selected box's User-Agent pair.
+        ...(stbModel ? { stbModel } : {}),
     });
     // Re-check after transport: Edit may have committed while the direct
     // request was in flight. In simple mode this guard remains network-free.

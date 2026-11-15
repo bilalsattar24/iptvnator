@@ -382,6 +382,7 @@ export function createWebBackendApp(
         const macAddress = getQueryString(req, 'macAddress');
         const token = getQueryString(req, 'token');
         const serialNumber = getQueryString(req, 'serialNumber');
+        const stbModel = getQueryString(req, 'stbModel');
         if (!url) {
             return;
         }
@@ -410,6 +411,8 @@ export function createWebBackendApp(
                     'macAddress',
                     'token',
                     'serialNumber',
+                    // Selects the User-Agent pair; never protocol content.
+                    'stbModel',
                     // Guard control flag, not protocol content — it must never
                     // reach the portal's query string.
                     'skipConnectionGuard',
@@ -428,6 +431,7 @@ export function createWebBackendApp(
                 params,
                 ...(token ? { token } : {}),
                 ...(serialNumber ? { serialNumber } : {}),
+                ...(stbModel ? { stbModel } : {}),
             });
             const headers = { ...identity.headers };
             if (!macAddress) {

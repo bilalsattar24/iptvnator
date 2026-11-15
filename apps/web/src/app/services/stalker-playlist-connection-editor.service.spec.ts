@@ -138,8 +138,34 @@ describe('AppStalkerPlaylistConnectionEditorService', () => {
                 stalkerDeviceId2: '',
                 stalkerSignature1: 'SIGNATURE-1',
                 stalkerSignature2: '',
+                // Written explicitly so a switch back to MAG250 replaces a
+                // stored model.
+                stalkerStbModel: 'MAG250',
                 stalkerSessionPatch: null,
             },
+        });
+    });
+
+    it('authenticates an edited connection as the selected box model', async () => {
+        discovery.discover.mockResolvedValue({
+            status: 'resolved',
+            portalUrl: 'https://portal.example.com/portal.php',
+            isFullStalkerPortal: false,
+        });
+
+        const result = await service.resolveConnection({
+            ...draft,
+            stalkerStbModel: 'MAG424',
+        });
+
+        expect(discovery.discover).toHaveBeenCalledWith(
+            draft.portalUrl,
+            draft.macAddress,
+            expect.objectContaining({ stbModel: 'MAG424' }),
+            expect.anything()
+        );
+        expect(result).toMatchObject({
+            playlist: { stalkerStbModel: 'MAG424' },
         });
     });
 
@@ -169,6 +195,7 @@ describe('AppStalkerPlaylistConnectionEditorService', () => {
             stalkerDeviceId2: '',
             stalkerSignature1: 'SIGNATURE-1',
             stalkerSignature2: '',
+            stalkerStbModel: 'MAG250' as const,
         };
 
         expect(result).toEqual({

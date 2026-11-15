@@ -2,7 +2,7 @@ import type { StalkerRequestOptions } from './stalker-request-options';
 export interface StalkerAuthTransport { sendIpcEvent<T = unknown>(type: string, payload?: unknown): T | Promise<T> }
 import {
     STALKER_REQUEST,
-    STALKER_STB_PROFILE_PARAMS,
+    getStalkerStbProfile,
 } from '@iptvnator/shared/interfaces';
 import {
     normalizeStalkerPortalIdentity,
@@ -90,6 +90,9 @@ export class StalkerAuthApi {
                         ...(normalizedIdentity.serialNumber
                             ? { serialNumber: normalizedIdentity.serialNumber }
                             : {}),
+                        ...(normalizedIdentity.stbModel
+                            ? { stbModel: normalizedIdentity.stbModel }
+                            : {}),
                     }
                 );
 
@@ -129,11 +132,12 @@ export class StalkerAuthApi {
         } = {}
     ): Promise<StalkerProfileResponse> {
         const normalizedIdentity = normalizeStalkerPortalIdentity(identity);
+        const stbProfile = getStalkerStbProfile(normalizedIdentity.stbModel);
 
         // Build metrics JSON matching working app
         const metrics: Record<string, string> = {
             mac: macAddress,
-            model: 'MAG250',
+            model: stbProfile.metricsModel,
             type: 'STB',
             random: handshakeRandom,
             ...(normalizedIdentity.serialNumber
@@ -147,10 +151,11 @@ export class StalkerAuthApi {
         const params: Record<string, string> = {
             type: 'stb',
             action: 'get_profile',
-            // One coherent MAG250: firmware, hardware revision, image version
-            // and `stb_type` (which used to go out empty), alongside the
-            // `hd`/`video_out`/`num_banks` this request already carried.
-            ...STALKER_STB_PROFILE_PARAMS,
+            // One coherent box of the selected model: firmware, hardware
+            // revision, image version and `stb_type` (which used to go out
+            // empty), alongside `hd`/`video_out`/`num_banks`. Panels that pin
+            // the model per MAC refuse any other `stb_type` as a conflict.
+            ...stbProfile.params,
             not_valid_token: options.notValidToken ? '1' : '0',
             auth_second_step: options.authSecondStep ? '1' : '0',
             metrics: JSON.stringify(metrics),
@@ -189,6 +194,9 @@ export class StalkerAuthApi {
                         token,
                         ...(normalizedIdentity.serialNumber
                             ? { serialNumber: normalizedIdentity.serialNumber }
+                            : {}),
+                        ...(normalizedIdentity.stbModel
+                            ? { stbModel: normalizedIdentity.stbModel }
                             : {}),
                     }
                 );
@@ -242,6 +250,9 @@ export class StalkerAuthApi {
                         token,
                         ...(normalizedIdentity.serialNumber
                             ? { serialNumber: normalizedIdentity.serialNumber }
+                            : {}),
+                        ...(normalizedIdentity.stbModel
+                            ? { stbModel: normalizedIdentity.stbModel }
                             : {}),
                     }
                 );

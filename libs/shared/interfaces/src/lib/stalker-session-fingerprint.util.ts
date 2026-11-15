@@ -1,5 +1,6 @@
 import type { Playlist } from './playlist.interface';
 import { normalizeStalkerIdentityValue } from './stalker-identity.utils';
+import { normalizeStalkerStbModel } from './stalker-stb-profile.const';
 
 /**
  * Canonical fingerprint of WHO a portal session belongs to: the MAC plus
@@ -17,19 +18,24 @@ export function stalkerIdentityFingerprint(
         | 'stalkerDeviceId2'
         | 'stalkerSignature1'
         | 'stalkerSignature2'
+        | 'stalkerStbModel'
     >
 ): string {
     // JSON-encoded, not delimiter-joined: identity values are unrestricted
     // strings, and an unescaped separator would let distinct tuples alias
     // each other and bypass the identity invalidation.
-    return JSON.stringify([
+    const fields = [
         normalizeStalkerIdentityValue(playlist.macAddress) ?? '',
         normalizeStalkerIdentityValue(playlist.stalkerSerialNumber) ?? '',
         normalizeStalkerIdentityValue(playlist.stalkerDeviceId1) ?? '',
         normalizeStalkerIdentityValue(playlist.stalkerDeviceId2) ?? '',
         normalizeStalkerIdentityValue(playlist.stalkerSignature1) ?? '',
         normalizeStalkerIdentityValue(playlist.stalkerSignature2) ?? '',
-    ]);
+    ];
+    // A non-default box model is part of the identity (panels pin it per
+    // MAC); the default is omitted so existing sessions stay valid.
+    const stbModel = normalizeStalkerStbModel(playlist.stalkerStbModel);
+    return JSON.stringify(stbModel ? [...fields, stbModel] : fields);
 }
 
 /**
@@ -65,6 +71,7 @@ export function stalkerSessionFingerprint(
         | 'stalkerDeviceId2'
         | 'stalkerSignature1'
         | 'stalkerSignature2'
+        | 'stalkerStbModel'
     >
 ): string {
     return JSON.stringify([

@@ -2,20 +2,18 @@ import {
     buildStalkerSerialCfduid,
     normalizeStalkerSerialNumber,
 } from './stalker-identity.utils';
-
-/**
- * User-Agent of a MAG250 set-top box (matches the stalker-to-m3u reference
- * implementation). Sent as both `User-Agent` and `X-User-Agent` on every
- * portal API request — some panels reject requests without it.
- */
-export const STALKER_MAG_USER_AGENT =
-    'Mozilla/5.0 (QtEmbedded; U; Linux; C) AppleWebKit/533.3 (KHTML, like Gecko) MAG250';
+import { getStalkerStbProfile } from './stalker-stb-profile.const';
 
 export interface StalkerIdentityRequestInput {
     macAddress: string;
     params: Record<string, string | number>;
     token?: string;
     serialNumber?: string;
+    /**
+     * The playlist's set-top box model; selects the User-Agent pair. Absent
+     * or unknown values present the default MAG250.
+     */
+    stbModel?: string;
 }
 
 export interface StalkerIdentityRequestContext {
@@ -28,7 +26,7 @@ export interface StalkerIdentityRequestContext {
 /**
  * Builds the portal-facing identity of a Stalker request: the cookie a real
  * STB sends (`mac` + `stb_lang` + `timezone`, plus a serial-derived
- * `__cfduid`), the MAG User-Agent pair, the `SN`/`Authorization` headers, and
+ * `__cfduid`), the User-Agent pair of the selected box model, the `SN`/`Authorization` headers, and
  * the serial-number parameter rules (`sn` travels only on `get_profile`).
  *
  * This is the single source of truth for BOTH transports — the Electron main
@@ -41,14 +39,16 @@ export function buildStalkerIdentityRequestContext({
     params,
     token,
     serialNumber,
+    stbModel,
 }: StalkerIdentityRequestInput): StalkerIdentityRequestContext {
+    const stbProfile = getStalkerStbProfile(stbModel);
     const effectiveSerialNumber = normalizeStalkerSerialNumber(serialNumber);
     const requestParams = buildRequestParams(params, effectiveSerialNumber);
     const cookieString = buildCookieString(macAddress, effectiveSerialNumber);
     const headers: Record<string, string> = {
         Cookie: cookieString,
-        'User-Agent': STALKER_MAG_USER_AGENT,
-        'X-User-Agent': STALKER_MAG_USER_AGENT,
+        'User-Agent': stbProfile.userAgent,
+        'X-User-Agent': stbProfile.xUserAgent,
         Accept: '*/*',
         Connection: 'keep-alive',
         'Accept-Language': 'en-US,en;q=0.9',

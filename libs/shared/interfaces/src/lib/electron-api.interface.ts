@@ -330,6 +330,8 @@ export interface ElectronBridgeStalkerRequestPayload {
     params: Record<string, string>;
     token?: string;
     serialNumber?: string;
+    /** Set-top box model of the playlist; selects the User-Agent pair. */
+    stbModel?: string;
     requestId?: string;
     /**
      * Endpoint-discovery probes only: exempt this request from the main
